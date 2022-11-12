@@ -1,4 +1,6 @@
+# script downloadable from: https://raw.githubusercontent.com/murraycadzow/resbaz2022/main/intro_r_rstudio.R
 # Lesson based on https://datacarpentry.org/R-ecology-lesson/
+
 
 
 # need to install packages only once
@@ -82,6 +84,10 @@ hindfoot_summary <- surveys %>%
   group_by(species_id) %>% 
   summarise(mean_hindfoot = mean(hindfoot_length, na.rm =TRUE))
 
+# saving data out
+hindfoot_no_na <- surveys %>% filter(!is.na(hindfoot_length))
+write_csv(hindfoot_no_na, file = "hindfoot_na_filtered.csv")
+
 ## CHALLENGE
 # Using pipes, subset the surveys data to include animals 
 # collected before 1995 and retain only the columns year, species_id, sex, 
@@ -103,6 +109,7 @@ hindfoot_summary <- surveys %>%
 # general syntax
 # ggplot(data = <DATA>, mapping = aes(<MAPPINGS>)) +  <GEOM_FUNCTION>()
 
+
 # Make a plot
 ggplot(data = surveys, mapping = aes(x = weight, y = hindfoot_length)) +
   geom_point()
@@ -117,3 +124,40 @@ ggplot(data = surveys,
                      y = hindfoot_length,
                      colour = plot_type)) +
   geom_point()
+
+
+## box plot
+ggplot(data = surveys, 
+       mapping = aes(x = plot_type,
+                     y = hindfoot_length,
+                     colour = plot_type)) +
+  geom_boxplot()
+
+
+## Facets
+ggplot(data = surveys, 
+       mapping = aes(x = plot_type,
+                     y = hindfoot_length)) +
+  geom_boxplot() +
+  facet_wrap(vars(sex))
+
+## Themes
+ggplot(data = surveys, 
+       mapping = aes(x = plot_type,
+                     y = hindfoot_length)) +
+  geom_boxplot() +
+  facet_wrap(vars(sex)) + 
+  theme_bw()
+
+# modifying theme elements
+ggplot(data = surveys, 
+       mapping = aes(x = plot_type,
+                     y = hindfoot_length)) +
+  geom_boxplot() +
+  facet_wrap(vars(sex)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90))
+
+## saving a plot
+# default behaviour is to save the last plot plotted
+ggsave("my_plot.png")
